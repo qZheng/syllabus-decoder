@@ -3,6 +3,9 @@ import Nav from "./components/navigation/Nav";
 import SpecialButton from "./components/ui/SpecialButton";
 import InfoTile from "./components/ui/InfoTile";
 import Arrow from "./assets/arrow-right-white.svg";
+import Upload from "./assets/green-upload.svg";
+import Analytics from "./assets/purple-analytics.svg";
+import Lightning from "./assets/yellow-lightning.svg";
 
 function App() {
     return (
@@ -28,6 +31,7 @@ function App() {
                 <div className="flex gap-4 mt-20">
                     <InfoTile
                         header="Upload"
+                        image={<img className="w-5" src={Upload}></img>}
                         description="Upload your syllabus to Syllabusy."
                     />
                     <div className="flex justify-center">
@@ -35,6 +39,7 @@ function App() {
                     </div>
                     <InfoTile
                         header="AI Extraction"
+                        image={<img className="w-5" src={Lightning}></img>}
                         description="Let AI parse your document for you."
                     />
                     <div className="flex justify-center">
@@ -42,6 +47,7 @@ function App() {
                     </div>
                     <InfoTile
                         header="View Results"
+                        image={<img className="w-6" src={Analytics}></img>}
                         description="Collect your information. It's that simple."
                     />
                 </div>
