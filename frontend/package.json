@@ -11,12 +11,14 @@
     "preview": "cross-env NODE_ENV=production node server"
   },
   "dependencies": {
+    "@heroui/react": "^2.8.0-beta.6",
     "@tailwindcss/vite": "^4.1.8",
     "compression": "^1.8.0",
     "express": "^5.0.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sirv": "^3.0.1",
+    "tailwind-scrollbar": "^4.0.2",
     "tailwindcss": "^4.1.8",
     "vite-plugin-svgr": "^4.3.0"
   },
