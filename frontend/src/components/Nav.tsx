@@ -1,11 +1,16 @@
-import AppLogo from "/syllabusy-logo.png";
+import Image from "next/image";
 
 function Nav() {
     return (
-        <div className="relative">
-            <div className="flex justify-around items-center p-2 w-screen text-md bg-[#090909] border-b-1 border-b-[#121212]">
+        <div className="relative text-white">
+            <div className="flex justify-around items-center p-2 text-md bg-[#090909] border-b-1 border-b-[#121212]">
                 <div className="flex gap-2 items-center">
-                    <img className="w-5" src={AppLogo} />
+                    <Image
+                        width={20}
+                        height={20}
+                        src="/logo-icon.png"
+                        alt="Syllabusy logo"
+                    />
                     <h2 className="font-semibold cursor-default">Syllabusy</h2>
                 </div>
                 <div className="flex gap-4">
