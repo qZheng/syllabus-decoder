@@ -16,15 +16,21 @@ To contribute to Syllabusy, you must have git, Node.js, Node Package Manager (np
 
 First, clone the repository into your own project.
 
-```git clone https://github.com/qZheng/syllabus-decoder```
+```
+git clone https://github.com/qZheng/syllabus-decoder
+```
 
 Next, navigate to the frontend root folder and install the dependencies.
 
-```npm install```
+```
+npm install
+```
 
 From there, you can start developing.
 
-```npm run dev```
+```
+npm run dev
+```
 
 ## Backend Contributions
 
