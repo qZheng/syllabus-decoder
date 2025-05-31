@@ -35,7 +35,7 @@ function Nav() {
                     </Link>
                 </div>
             </div>
-            <button className="absolute top-2 right-10 cursor-pointer text-md bg-[#101010] hover:bg-[#131313] transition-colors duration-500 ease-in-out shadow-md font-semibold rounded-lg text-white p-1 px-2 border-1 border-[#191919]">
+            <button className="absolute top-2 right-10 cursor-pointer text-md bg-[#101010] hover:bg-[#191919] transition-colors duration-500 ease-in-out shadow-md font-semibold rounded-lg text-white p-1 px-2 border-1 border-[#191919]">
                 Log In
             </button>
         </nav>
