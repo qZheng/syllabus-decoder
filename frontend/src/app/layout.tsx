@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import Nav from "../components/Nav";
+import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
     title: "Syllabusy",
@@ -16,7 +18,11 @@ export default function RootLayout({
             lang="en"
             style={{ colorScheme: "dark", backgroundColor: "#060606" }}
         >
-            <body>{children}</body>
+            <body>
+                <Nav />
+                {children}
+                <Footer />
+            </body>
         </html>
     );
 }
