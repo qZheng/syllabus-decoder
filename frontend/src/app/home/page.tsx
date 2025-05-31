@@ -1,7 +1,7 @@
 import Image from "next/image";
 import SpecialButton from "../../components/SpecialButton";
 import InfoTile from "../../components/InfoTile";
-import AccordionElement from "@/src/components/ui/AccordionElement";
+import AccordionElement from "@/src/components/AccordionElement";
 
 export default function HomePage() {
     return (
@@ -15,8 +15,8 @@ export default function HomePage() {
                     details from your syllabi so that{" "}
                     <span className="font-semibold">you don't have to.</span>
                 </p>
-                <div className="flex justify-center">
-                    <SpecialButton />
+                <div className="flex justify-center mt-10">
+                    <SpecialButton text="Get started" />
                 </div>
             </div>
             <p className="mt-15 text-xl text-gray-600">

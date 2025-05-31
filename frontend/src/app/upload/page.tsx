@@ -1,9 +1,10 @@
 import Image from "next/image";
+import SpecialButton from "@/src/components/SpecialButton";
 
 export default function UploadPage() {
+    // upload dropbox sizes
     const uploadBoxWidth = 512;
     const uploadBoxHeight = 256;
-
     const uploadIconWidth = uploadBoxWidth / 8;
     const uploadIconHeight = uploadBoxHeight / 4;
 
@@ -33,6 +34,10 @@ export default function UploadPage() {
                         alt="upload icon"
                     />
                 </div>
+            </div>
+            <div className="flex gap-4">
+                <input type="file" className="hidden" />
+                <SpecialButton text="Upload" />
             </div>
         </div>
     );
