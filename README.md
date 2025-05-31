@@ -8,7 +8,7 @@ Syllabusy is a web app that allows users to upload their syllabi for ai to parse
 -   Data and information display through a neat dashboard
 -   Login and preservation of user data
 
-# Contribution
+# Contributions
 
 To contribute to Syllabusy, you must have git, Node.js, Node Package Manager (npm), and Python (as well as pip, which should most likely be automatically installed) for the frontend and backend to install the relevant dependencies.
 
@@ -16,15 +16,15 @@ To contribute to Syllabusy, you must have git, Node.js, Node Package Manager (np
 
 First, clone the repository into your own project.
 
-`git clone https://github.com/qZheng/syllabus-decoder`
+```git clone https://github.com/qZheng/syllabus-decoder```
 
 Next, navigate to the frontend root folder and install the dependencies.
 
-`npm install`
+```npm install```
 
 From there, you can start developing.
 
-`npm run dev`
+```npm run dev```
 
 ## Backend Contributions
 
