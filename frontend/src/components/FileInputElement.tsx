@@ -1,13 +1,25 @@
 "use client";
-import SpecialButton from "./SpecialButton";
-import React, { ChangeEvent, useRef, useState } from "react";
+import React, { ChangeEvent, useRef } from "react";
 
-export default function FileInputButton() {
+interface UploadStatus {
+    message: string;
+}
+
+interface fileInputElementProps {
+    className?: string;
+    children?: React.ReactNode;
+    uploadStatusChange: (status: UploadStatus) => void;
+}
+
+export default function FileInputElement({
+    className,
+    children,
+    uploadStatusChange,
+}: fileInputElementProps) {
     const fileRef = useRef<HTMLInputElement | null>(null);
-    const [uploading, isUploading] = useState(false);
     const UPLOAD_URL = "http://localhost:5000/upload";
 
-    function handleClick() {
+    function startUpload() {
         fileRef.current?.click();
     }
 
@@ -15,11 +27,9 @@ export default function FileInputButton() {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // added a state to check if we are uploading, and to serve to frontend
-        isUploading(true);
-
         const data = new FormData();
         data.append("file", file);
+        uploadStatusChange({ message: "Trying to upload..." });
 
         // implemented a try/catch block to better understand program flow in case of errors
         try {
@@ -35,7 +45,13 @@ export default function FileInputButton() {
             // if it errors here, then backend did not return JSON
             const result = await response.json();
             console.log("Upload worked", result);
+            uploadStatusChange({
+                message: "Upload completed successfully.",
+            });
         } catch (error) {
+            uploadStatusChange({
+                message: "Upload failed.",
+            });
             if (error instanceof Error) {
                 // here we can specify the stacktrace of the error since we have its type
                 console.error(`An error occured: ${error.message}`, error);
@@ -43,24 +59,18 @@ export default function FileInputButton() {
                 // if type is unknown, we say the error is unknown but we don't have stacktrace
                 console.error("An unknown error occured: ", error);
             }
-        } finally {
-            // this occurs at the end no matter what, resetting state
-            isUploading(false);
         }
     }
 
     return (
-        <>
+        <button className={className} onClick={startUpload}>
             <input
                 onChange={handleFileChange}
                 ref={fileRef}
                 type="file"
                 className="hidden"
             />
-            <SpecialButton
-                handleClick={handleClick}
-                text={uploading ? "Uploading..." : "Upload"}
-            />
-        </>
+            {children}
+        </button>
     );
 }
