@@ -16,7 +16,7 @@ export default function HomePage() {
                     <span className="font-semibold">you don't have to.</span>
                 </p>
                 <div className="flex justify-center mt-10">
-                    <SpecialButton text="Get started" />
+                    <SpecialButton href="/upload" text="Get started" />
                 </div>
             </div>
             <p className="mt-15 text-xl text-gray-600">
