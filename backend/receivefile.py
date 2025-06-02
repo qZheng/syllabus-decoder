@@ -17,7 +17,7 @@ def receivefile():
     if file.filename == '':
         return jsonify({'error': 'Upload error'}), 400
 
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename) # type: ignore
     file.save(file_path)
 
     return jsonify({'message': 'File uploaded!', 'filename': file.filename})
