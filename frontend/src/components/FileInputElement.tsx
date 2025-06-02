@@ -1,5 +1,10 @@
 "use client";
-import React, { ChangeEvent, useRef } from "react";
+import React, {
+    ChangeEvent,
+    useRef,
+    forwardRef,
+    useImperativeHandle,
+} from "react";
 
 interface UploadStatus {
     message: string;
@@ -11,13 +16,20 @@ interface fileInputElementProps {
     uploadStatusChange: (status: UploadStatus) => void;
 }
 
-export default function FileInputElement({
-    className,
-    children,
-    uploadStatusChange,
-}: fileInputElementProps) {
+export interface fileInputElementHandles {
+    startUpload: () => void;
+}
+
+const FileInputElement = forwardRef<
+    fileInputElementHandles,
+    fileInputElementProps
+>(({ className, children, uploadStatusChange }, ref) => {
     const fileRef = useRef<HTMLInputElement | null>(null);
     const UPLOAD_URL = "http://localhost:5000/upload";
+
+    useImperativeHandle(ref, () => {
+        return { startUpload: startUpload };
+    });
 
     function startUpload() {
         fileRef.current?.click();
@@ -73,4 +85,6 @@ export default function FileInputElement({
             {children}
         </button>
     );
-}
+});
+
+export default FileInputElement;

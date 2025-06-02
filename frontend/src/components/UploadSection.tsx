@@ -1,8 +1,8 @@
 "use client";
-import FileInputElement from "./FileInputElement";
+import FileInputElement, { fileInputElementHandles } from "./FileInputElement";
 import Image from "next/image";
 import SpecialButton from "./SpecialButton";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 interface UploadStatus {
     message: string;
@@ -10,6 +10,7 @@ interface UploadStatus {
 
 export default function UploadSection() {
     const [statusText, setStatusText] = useState("");
+    const fileInputRef = useRef<fileInputElementHandles>(null);
 
     // file input box sizes
     const uploadBoxWidth = 512;
@@ -23,13 +24,15 @@ export default function UploadSection() {
 
     //TODO:
     function handleClick() {
-        // something
+        if (fileInputRef.current) {
+            fileInputRef.current.startUpload();
+        }
     }
 
     return (
         <>
             <FileInputElement
-                uploadFile={handleClick}
+                ref={fileInputRef}
                 uploadStatusChange={handleFetchStatus}
                 className="relative hover:bg-[#111111] transition-colors duration-500 rounded-3xl"
             >
@@ -48,8 +51,10 @@ export default function UploadSection() {
                         alt="upload icon"
                     />
                 </div>
+                <p className={`absolute left-[50%] translate-x-[-50%]`}>
+                    {statusText}
+                </p>
             </FileInputElement>
-            <p>{statusText}</p>
             <SpecialButton text="Upload" handleClick={handleClick} />
         </>
     );
