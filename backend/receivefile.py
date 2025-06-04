@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
+import uuid
 
 app = Flask(__name__)
 CORS(app) 
@@ -17,10 +18,12 @@ def receivefile():
     if file.filename == '':
         return jsonify({'error': 'Upload error'}), 400
 
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename) # type: ignore
+    ext = os.path.splitext(file.filename)[1]
+    random_filename = f"{uuid.uuid4().hex}{ext}"
+    file_path = os.path.join(UPLOAD_FOLDER, random_filename) # type: ignore
     file.save(file_path)
 
-    return jsonify({'message': 'File uploaded!', 'filename': file.filename})
+    return jsonify({'message': 'File uploaded!', 'filename': random_filename})
 
 if __name__ == '__main__':
     app.run(debug=True)
