@@ -15,6 +15,7 @@ client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
 import pdfplumber
 import json
 
+
 def normalize_text(text):
     lines = text.split("\n")
     cleaned = [line.strip() for line in lines if line.strip()]
@@ -53,63 +54,105 @@ CORS(
     },
 )
 
-
-def format_prompt(text):
-    prompt = """
+def format_prompt(chunk):
+    """
+    Formats a prompt for extracting course information from a syllabus chunk.
+    """
+    prompt = f"""
     You are processing an arbitrary chunk of text taken from a university course syllabus. This is only **a portion** of the full syllabus—it may contain incomplete sentences or span multiple sections (e.g. grading, instructors, deadlines, etc).
     Your job is to extract any **clearly available** course information from this chunk and output a JSON object in the following schema. Only include fields that are explicitly mentioned in the text. All other fields must be set to `null` or empty lists.
 
+    Input text:
+    {chunk}
+
 Expected JSON format:
-{
-  "instructor": {
+{{
+  "instructor": {{
     "name": ...,
     "email": ...,
     "office_hours": ...
-  },
+  }},
   "TAs": [
-    {
+    {{
       "name": ...,
       "email": ...,
       "office_hours": ...
-    }
+    }}
   ],
   "grading": [
-    {
+    {{
       "component": ...,
       "weight_percent": ...
-    }
+    }}
   ],
   "deadlines": [
-    {
+    {{
       "name": ...,
       "date": ...,
       "type": "assignment/exam/quiz/etc"
-    }
+    }}
   ],
-  "policies": {
+  "policies": {{
     "late_policy": ...,
     "attendance_policy": ...,
     "extra_credit": ...
-  },
+  }},
   "textbooks": [
-    {
+    {{
       "title": ...,
       "author": ...,
       "isbn": ...
-    }
+    }}
   ]
-}
+}}
 
 Guidelines:
 - Do not fabricate or assume anything not present in the chunk.
 - It's okay if most fields are null—this is expected.
 - Output only the JSON object. No extra explanation.
     """
+    print(prompt)
     return prompt.strip()
+
+
+def combine_jsons(jsons):
+    combined = {
+        "instructor": {"name": None, "email": None, "office_hours": None},
+        "TAs": [],
+        "grading": [],
+        "deadlines": [],
+        "policies": {
+            "late_policy": None,
+            "attendance_policy": None,
+            "extra_credit": None,
+        },
+        "textbooks": [],
+    }
+
+    for json_str in jsons:
+        try:
+            obj = json.loads(json_str)
+        except Exception:
+            continue
+        if "instructor" in obj:
+            combined["instructor"] = merge_dicts(combined["instructor"], obj["instructor"])
+        if "policies" in obj:
+            combined["policies"] = merge_dicts(combined["policies"], obj["policies"])
+        if "TAs" in obj:
+            combined["TAs"] = merge_lists(combined["TAs"], obj["TAs"], unique_key="email")
+        if "grading" in obj:
+            combined["grading"] = merge_lists(combined["grading"], obj["grading"], unique_key="component")
+        if "deadlines" in obj:
+            combined["deadlines"] = merge_lists(combined["deadlines"], obj["deadlines"], unique_key="name")
+        if "textbooks" in obj:
+            combined["textbooks"] = merge_lists(combined["textbooks"], obj["textbooks"], unique_key="title")
+
+    return combined
+
 
 def extract_info(text):
     try:
-        max_chunk_size = 4000
+        max_chunk_size = 2000
         chunks = [
             text[i : i + max_chunk_size] for i in range(0, len(text), max_chunk_size)
         ]
@@ -128,20 +171,19 @@ def extract_info(text):
                 max_tokens=4000,
                 temperature=0.5,
             )
+            print(response)
             responses.append(response.choices[0].message.content)
 
-        # Combine responses (simple implementation - will improve later)
-        combined = " ".join(responses)
-        return combined.strip()
+        combined = combine_jsons(responses)
+        return combined
     except Exception as e:
         print(f"Error: {str(e)}")
         return "failed"
-    
-  
 
 
 if __name__ == "__main__":
     text = extract_text()
-    result = extract_info(format_prompt(text))
+    result = extract_info(text)
+    print(json.dumps(result, indent=2))
     print(result)
     app.run(port=5000)
