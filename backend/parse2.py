@@ -54,10 +54,8 @@ CORS(
     },
 )
 
+
 def format_prompt(chunk):
-    """
-    Formats a prompt for extracting course information from a syllabus chunk.
-    """
     prompt = f"""
     You are processing an arbitrary chunk of text taken from a university course syllabus. This is only **a portion** of the full syllabus—it may contain incomplete sentences or span multiple sections (e.g. grading, instructors, deadlines, etc).
     Your job is to extract any **clearly available** course information from this chunk and output a JSON object in the following schema. Only include fields that are explicitly mentioned in the text. All other fields must be set to `null` or empty lists.
@@ -66,41 +64,41 @@ def format_prompt(chunk):
     {chunk}
 
 Expected JSON format:
-{{
+{{ 
   "instructor": {{
-    "name": ...,
-    "email": ...,
+    "name": ..., 
+    "email": ..., 
     "office_hours": ...
   }},
   "TAs": [
     {{
-      "name": ...,
-      "email": ...,
+      "name": ..., 
+      "email": ..., 
       "office_hours": ...
     }}
   ],
   "grading": [
     {{
-      "component": ...,
+      "component": ..., 
       "weight_percent": ...
     }}
   ],
   "deadlines": [
     {{
-      "name": ...,
-      "date": ...,
+      "name": ..., 
+      "date": ..., 
       "type": "assignment/exam/quiz/etc"
     }}
   ],
   "policies": {{
-    "late_policy": ...,
-    "attendance_policy": ...,
+    "late_policy": ..., 
+    "attendance_policy": ..., 
     "extra_credit": ...
   }},
   "textbooks": [
     {{
-      "title": ...,
-      "author": ...,
+      "title": ..., 
+      "author": ..., 
       "isbn": ...
     }}
   ]
@@ -111,7 +109,7 @@ Guidelines:
 - It's okay if most fields are null—this is expected.
 - Output only the JSON object. No extra explanation.
     """
-    print(prompt)
+    print(chunk)
     return prompt.strip()
 
 
@@ -129,23 +127,34 @@ def combine_jsons(jsons):
         "textbooks": [],
     }
 
+    def merge_field(field, current_value, new_value):
+        if isinstance(current_value, dict) and isinstance(new_value, dict):
+            for k, v in new_value.items():
+                if (
+                    v is not None
+                    and v != ""
+                    and (current_value.get(k) in (None, "", [], {}))
+                ):
+                    current_value[k] = v
+            return current_value
+        elif isinstance(current_value, list) and isinstance(new_value, list):
+            existing = current_value.copy()
+            for item in new_value:
+                if item not in existing:
+                    current_value.append(item)
+            return current_value
+        else:
+            return new_value if new_value not in (None, "", [], {}) else current_value
+
     for json_str in jsons:
         try:
             obj = json.loads(json_str)
-        except Exception:
+        except Exception as e:
             continue
-        if "instructor" in obj:
-            combined["instructor"] = merge_dicts(combined["instructor"], obj["instructor"])
-        if "policies" in obj:
-            combined["policies"] = merge_dicts(combined["policies"], obj["policies"])
-        if "TAs" in obj:
-            combined["TAs"] = merge_lists(combined["TAs"], obj["TAs"], unique_key="email")
-        if "grading" in obj:
-            combined["grading"] = merge_lists(combined["grading"], obj["grading"], unique_key="component")
-        if "deadlines" in obj:
-            combined["deadlines"] = merge_lists(combined["deadlines"], obj["deadlines"], unique_key="name")
-        if "textbooks" in obj:
-            combined["textbooks"] = merge_lists(combined["textbooks"], obj["textbooks"], unique_key="title")
+
+        for key in combined.keys():
+            if key in obj:
+                combined[key] = merge_field(key, combined[key], obj[key])
 
     return combined
 
@@ -166,8 +175,9 @@ def extract_info(text):
                         "role": "system",
                         "content": "You are a helpful AI that extracts structured information from text",
                     },
-                    {"role": "user", "content": format_prompt(chunk)},
+                    {"role": "user", "content": format_prompt(chunk)}
                 ],
+                response_format={'type': 'json_object'},
                 max_tokens=4000,
                 temperature=0.5,
             )
