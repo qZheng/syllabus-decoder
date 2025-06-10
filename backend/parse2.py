@@ -190,10 +190,49 @@ def extract_info(text):
         print(f"Error: {str(e)}")
         return "failed"
 
+def clean(data):
+    prompt = f"""
+    You are given a partially filled course information JSON extracted from a university syllabus. Your task is to clean, normalize, and fix the data:
+
+    Rules:
+    - Ensure all email addresses are properly formatted (e.g. `john at email dot com` → `john@email.com`).
+    - Format office hours into Day xx:xx i.e "Wednesday 10:00–12:00".
+    - Deduplicate textbook entries. If two entries share a title or an author but differ in other fields, combine them into one if logically consistent.
+    - Ensure grading weights add up to 100%. If there's inconsistencies, use your best judgment to adjust them.
+    - Standardize date formats to YYYY-MM-DD.
+    - Leave all clearly unknown values as `null`.
+
+    Here's the raw extracted JSON:
+
+    ```json
+    {json.dumps(data, indent=2)}
+    ```
+
+    Return ONLY the cleaned JSON object with the same structure.
+    """
+
+    response = client.chat.completions.create(
+        model="deepseek-chat",
+        messages=[
+            {"role": "system", "content": "You clean and validate JSON extracted from course syllabi."},
+            {"role": "user", "content": prompt}
+        ],
+        response_format={"type": "json_object"},
+        max_tokens=2000,
+        temperature=0.2,
+    )
+
+    try:
+        return json.loads(response.choices[0].message.content)
+    except Exception as e:
+        print(f"{e}")
+        return data
+
+
 
 if __name__ == "__main__":
     text = extract_text()
-    result = extract_info(text)
+    result = clean(extract_info(text))
     print(json.dumps(result, indent=2))
     print(result)
     app.run(port=5000)
