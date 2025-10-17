@@ -1,6 +1,6 @@
-# Syllabusy
+# Syllabuddy
 
-Syllabusy is a web app that allows users to upload their syllabi for ai to parse and summarize. Key details, dates, and information is extracted, which is then aggregated and displayed to the user.
+Syllabuddy is a web app that allows users to upload their syllabi for ai to parse and summarize. Key details, dates, and information is extracted, which is then aggregated and displayed to the user.
 
 ## What are all the planned features?
 
@@ -10,7 +10,7 @@ Syllabusy is a web app that allows users to upload their syllabi for ai to parse
 
 # Contributions
 
-To contribute to Syllabusy, you must have git, Node.js, Node Package Manager (npm), and Python (as well as pip, which should most likely be automatically installed) for the frontend and backend to install the relevant dependencies.
+To contribute to Syllabuddy, you must have git, Node.js, Node Package Manager (npm), and Python (as well as pip, which should most likely be automatically installed) for the frontend and backend to install the relevant dependencies.
 
 ## Frontend Contributions
 
