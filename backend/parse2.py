@@ -10,7 +10,9 @@ api_key = os.getenv("DEEPSEEK_API_KEY")
 if not api_key:
     raise ValueError("DEEPSEEK_API_KEY not found in .env")
 
-client = OpenAI(api_key=api_key, base_url="https://api.deepseek.com")
+os.environ["OPENAI_API_KEY"] = api_key
+client = OpenAI(base_url="https://api.deepseek.com")
+
 
 import pdfplumber
 import json
@@ -32,7 +34,11 @@ def normalize_text(text):
 #     print(all_text)
 
 
-def extract_text(pdf_path="pdfs/Syllabus.pdf"):  # <---- For testing change later
+def extract_text(pdf_path=None):  # <---- Hardcoded, for testing change later
+    if pdf_path is None:
+        base_dir = os.path.dirname(__file__)
+        pdf_path = os.path.join(base_dir, "pdfs", "Syllabus.pdf")
+
     with pdfplumber.open(pdf_path) as pdf:
         all_text = ""
         for page in pdf.pages:
